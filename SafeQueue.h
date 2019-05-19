@@ -1,7 +1,7 @@
 #ifndef SAFEQUEUE_H
 #define SAFEQUEUE_H
 
-#include <QObject>
+#include <mutex>
 #include <condition_variable>
 #include <queue>
 

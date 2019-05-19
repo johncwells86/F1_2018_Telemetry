@@ -1,22 +1,21 @@
-#include "mainwindow.h"
-#include <QApplication>
-#include <QtCharts/QChartView>
-#include <QDebug>
-
+#include <thread>
+#include "UDPListener.h"
+#include "SafeQueue.h"
+#include "PacketAnalyzer.h"
+#include "packets.h"
 int main(int argc, char *argv[])
 {
-  QApplication a(argc, argv);
-  qDebug() << "STARTING";
-  MainWindow w;
-  w.resize(1500,300);
-  w.show();
-  //w.addData(QPointF(2,3));
-  //w.addData(QPointF(5,24));
-  //w.addData(QPointF(15,60));
-  //w.addData(QPointF(30,45));
-  //w.addData(QPointF(67,11));
-  //w.addData(QPointF(106,24));
+    SafeQueue<NetworkPacket>* q = new SafeQueue<NetworkPacket>();
+    PacketAnalyzer* packet_analyzer = new PacketAnalyzer(q);
+    UDPListener* udp = new UDPListener(20777, q);
+    std::thread uThread([udp] {
+        udp->run();
+    });
 
-  qDebug() << "ENDING";
-  return a.exec();
+    std::thread pThread([packet_analyzer]{ 
+        packet_analyzer->run();
+    });
+    pThread.join();
+    // udp.run();
+    return 0;
 }

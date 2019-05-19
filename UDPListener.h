@@ -1,29 +1,26 @@
 #ifndef UDPLISTENER_H
 #define UDPLISTENER_H
 
-#include <QObject>
-#include <QThread>
-#include <QString>
-#include <QtNetwork/QUdpSocket>
+#include <string>
+#include <sys/socket.h> 
 #include <future>
 #include "packets.h"
 #include "SafeQueue.h"
 
-constexpr auto NETWORK_PACKET_SIZE = 2048;
+// auto PACKET_SIZE = 2048;
 
-class UDPListener : public QObject {
-  Q_OBJECT
+class UDPListener {
+
 public:
-  UDPListener(QString ip_addr, quint16 port, SafeQueue<NetworkPacket>* q);
-  ~UDPListener();
-public slots:
-  void Run();
-  
+  	UDPListener(int port, SafeQueue<NetworkPacket>* q);
+  	~UDPListener();
+  	void run();
+
 private:
-  QUdpSocket* socket;
-  QString ip_addr;
-  quint16 port;
-  SafeQueue<NetworkPacket>* q;
+    int socket;
+    std::string ip_addr;
+    uint16_t port;
+  	SafeQueue<NetworkPacket>* q;
 };
 
 #endif
