@@ -54,27 +54,38 @@ void UDPListener::run() {
     int i = 0;
     while(go) {
         NetworkPacket data;
-        n = recvfrom(sockfd, (char *)buffer, sizeof(buffer), 0, ( struct sockaddr *) &cliaddr, &len);
+        n = recvfrom(sockfd, (char *)&buffer, sizeof(buffer), 0, ( struct sockaddr *) &cliaddr, &len);
         if(n < 0) {
-            memset(&buffer, 0, sizeof(data.data));
+            memset(&buffer, 0, sizeof(buffer));
             printf("ERRORRRORRRRORRRRR!");
             continue;
         } 
-        if (i % 1000 == 0) { 
 
-            std::cout << "Are you receiving me?" << std::endl;
+        memcpy(&data.header.packetFormat, buffer, sizeof(uint16_t));
+        memcpy(&data.header.packetVersion, buffer + 2, sizeof(uint8_t));
+        memcpy(&data.header.packetId, buffer + 3, sizeof(uint8_t)); 
+        memcpy(&data.header.sessionUID, buffer + 4, sizeof(uint64_t));
+        memcpy(&data.header.sessionTime, buffer + 12, sizeof(float)); 
+        memcpy(&data.header.frameIdentifier, buffer + 16, sizeof(uint32_t));
+        memcpy(&data.header.playerCarIndex, buffer + 20, sizeof(uint8_t));
+        
+        memcpy(&data.data, buffer, sizeof(buffer));
+
+        for(int i=21;i<n; i++)
+        {
+            printf("%02x ",buffer[i]);
+        // memset()
         }
-        // printf("Received %d bytes from UDP Thingy.\n", n);
-        memcpy(&data.header, buffer, sizeof(data.header));
-        // memcpy(&data.data, buffer + sizeof(data.header), sizeof(buffer) - sizeof(data.header));
+        printf("\n---------------------------\n");
         // data.data[n] = '\0'; 
-        // write(1,data.data,n);
+        // write(1,data.data,n);    
         q->push_item(data);
         i++;
         // for(int i = 0; i < n; ++i)
             // fprintf(stdout, "%02X%s", buffer[i], ( i + 1 ) % 16 == 0 ? "\n" : " " );
         // printf("Client : %s\n", buffer);
         memset(&buffer, 0, sizeof(buffer));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     }
 
