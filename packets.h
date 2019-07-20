@@ -1,8 +1,22 @@
 #pragma once
 #include <sys/types.h>
 #include <cstring>
-struct PacketHeader
+#include <algorithm>
+#include <iterator>
+#include <iostream>
+
+ struct __attribute__((__packed__)) PacketHeader
 {
+    // PacketHeader() {}
+    // PacketHeader(const PacketHeader& header) {
+    //     packetFormat = header.packetFormat;
+    //     packetVersion = header.packetVersion;
+    //     packetId = header.packetId;
+    //     sessionUID = header.sessionUID;
+    //     sessionTime = header.sessionTime;
+    //     frameIdentifier = header.frameIdentifier;
+    //     playerCarIndex = header.playerCarIndex;
+    // }
     uint16_t    packetFormat;         // 2018 2
     uint8_t     packetVersion;        // Version of this packet type, all start from 1 1
     uint8_t     packetId;             // Identifier for the packet type, see below 1
@@ -17,40 +31,39 @@ struct PacketHeader
 // N.B. For the normalised vectors below, to convert to float values divide by 32767.0f. 16-bit signed values are used to pack the data and on the assumption that direction values are always between -1.0f and 1.0f.
 // Frequency: Rate as specified in menus
 // Size: 1341 bytes
-struct CarMotionData
+struct __attribute__((__packed__)) CarMotionData
 {
-    CarMotionData() {}
-    CarMotionData(char buffer[]) {
-        struct CarMotionData* p=this;
-        unsigned char* charPtr=(unsigned char*)p;
-        memset(&worldPosX, buffer[0], sizeof(worldPosX));
-        memset(&worldPosY, buffer[3], sizeof(worldPosY));
-        memset(&worldPosZ, buffer[7], sizeof(worldPosZ));
-        memset(&worldVelX, buffer[11], sizeof(worldVelX));
-        memset(&worldVelY, buffer[15], sizeof(worldVelY));
-        memset(&worldVelZ, buffer[19], sizeof(worldVelZ));
-
-    }
-    float         worldPosX;           // World space X position
-    float         worldPosY;           // World space Y position
-    float         worldPosZ;           // World space Z position
-    float         worldVelX;           // Velocity in world space X
-    float         worldVelY;           // Velocity in world space Y
-    float         worldVelZ;           // Velocity in world space Z
-    int16_t       worldForwardDirX;         // World space forward X direction (normalised)
-    int16_t       worldForwardDirY;         // World space forward Y direction (normalised)
-    int16_t       worldForwardDirZ;         // World space forward Z direction (normalised)
-    int16_t       worldRightDirX;           // World space right X direction (normalised)
-    int16_t       worldRightDirY;           // World space right Y direction (normalised)
-    int16_t       worldRightDirZ;           // World space right Z direction (normalised)
-    float         gForceLateral;            // Lateral G-Force component
-    float         gForceLongitudinal;       // Longitudinal G-Force component
-    float         gForceVertical;           // Vertical G-Force component
-    float         yaw;                      // Yaw angle in radians
-    float         pitch;                    // Pitch angle in radians
-    float         roll;                     // Roll angle in radians
+    // CarMotionData() {}
+    // CarMotionData(char buffer[]) {
+    //     struct CarMotionData* p=this;
+    //     unsigned char* charPtr=(unsigned char*)p;
+        // memcpy(&worldPosX, &buffer, sizeof(worldPosX));
+        // memcpy(&worldPosY, &buffer + 3, sizeof(worldPosY));
+        // memcpy(&worldPosZ, &buffer + 7, sizeof(worldPosZ));
+        // memcpy(&worldVelX, &buffer + 11, sizeof(worldVelX));
+        // memcpy(&worldVelY, &buffer + 15, sizeof(worldVelY));
+        // memcpy(&worldVelZ, &buffer + 19, sizeof(worldVelZ));
+    // }
+    float         worldPosX = 0;           // World space X position
+    float         worldPosY = 0;           // World space Y position
+    float         worldPosZ = 0;           // World space Z position
+    float         worldVelX  = 0;           // Velocity in world space X
+    float         worldVelY  = 0;           // Velocity in world space Y
+    float         worldVelZ  = 0;           // Velocity in world space Z
+    int16_t       worldForwardDirX  = 0;         // World space forward X direction (normalised)
+    int16_t       worldForwardDirY = 0;         // World space forward Y direction (normalised)
+    int16_t       worldForwardDirZ = 0;         // World space forward Z direction (normalised)
+    int16_t       worldRightDirX = 0;           // World space right X direction (normalised)
+    int16_t       worldRightDirY = 0;           // World space right Y direction (normalised)
+    int16_t       worldRightDirZ = 0;           // World space right Z direction (normalised)
+    float         gForceLateral = 0;            // Lateral G-Force component
+    float         gForceLongitudinal = 0;       // Longitudinal G-Force component
+    float         gForceVertical = 0;           // Vertical G-Force component
+    float         yaw = 0;                      // Yaw angle in radians
+    float         pitch = 0;                    // Pitch angle in radians
+    float         roll = 0;                     // Roll angle in radians
 };
-struct PacketMotionData
+ struct __attribute__((__packed__)) PacketMotionData
 {
     PacketHeader    header;               // Header
 
@@ -79,13 +92,13 @@ struct PacketMotionData
 // The session packet includes details about the current session in progress.
 // Frequency: 2 per second
 // Size: 147 bytes
-struct MarshalZone
+ struct __attribute__((__packed__)) MarshalZone
 {
     float  zoneStart;   // Fraction (0..1) of way through the lap the marshal zone starts
     int8_t   zoneFlag;    // -1 = invalid/unknown, 0 = none, 1 = green, 2 = blue, 3 = yellow, 4 = red
 };
 
-struct PacketSessionData
+ struct __attribute__((__packed__)) PacketSessionData
 {
     PacketHeader    header;                 // Header
 
@@ -118,8 +131,10 @@ struct PacketSessionData
 // The lap data packet gives details of all the cars in the session.
 // Frequency: Rate as specified in menus
 // Size: 841 bytes
-struct LapData
+
+ struct __attribute__((__packed__)) LapData
 {
+    
     float       lastLapTime;           // Last lap time in seconds
     float       currentLapTime;        // Current time around the lap in seconds
     float       bestLapTime;           // Best lap time of the session in seconds
@@ -144,10 +159,14 @@ struct LapData
                                          // 6 = retired
 };
 
-struct PacketLapData
+ struct __attribute__((__packed__)) PacketLapData
 {
+    PacketLapData(const PacketHeader& hdr, char buffer[])
+    {
+        header = hdr;
+        
+    }
     PacketHeader    header;              // Header
-
     LapData         lapData[20];         // Lap data for all cars on track
 };
 
@@ -155,7 +174,7 @@ struct PacketLapData
 // This packet gives details of events that happen during the course of the race.
 // Frequency: When the event occurs
 // Size: 25 bytes
-struct PacketEventData
+ struct __attribute__((__packed__)) PacketEventData
 {
     PacketHeader    header;               // Header
     uint8_t           eventStringCode[4];   // Event string code, see above
@@ -165,7 +184,7 @@ struct PacketEventData
 // This is a list of participants in the race. If the vehicle is controlled by AI, then the name will be the driver name. If this is a multiplayer game, the names will be the Steam Id on PC, or the LAN name if appropriate. On Xbox One, the names will always be the driver name, on PS4 the name will be the LAN name if playing a LAN game, otherwise it will be the driver name.
 // Frequency: Every 5 seconds
 // Size: 1082 bytes
-struct ParticipantData
+ struct __attribute__((__packed__)) ParticipantData
 {
     uint8_t      aiControlled;           // Whether the vehicle is AI (1) or Human (0) controlled
     uint8_t      driverId;               // Driver id - see appendix
@@ -175,7 +194,7 @@ struct ParticipantData
     char       name[48];               // Name of participant in UTF-8 format – null terminated
                                          // Will be truncated with … (U+2026) if too long
 };
-struct PacketParticipantsData
+ struct __attribute__((__packed__)) PacketParticipantsData
 {
     PacketHeader    header;            // Header
 
@@ -187,7 +206,7 @@ struct PacketParticipantsData
 // This packet details the car setups for each vehicle in the session. Note that in multiplayer games, other player cars will appear as blank, you will only be able to see your car setup and AI cars.
 // Frequency: Every 5 seconds
 // Size: 841 bytes
-struct CarSetupData
+ struct __attribute__((__packed__)) CarSetupData
 {
     uint8_t     frontWing;                // Front wing aero
     uint8_t     rearWing;                 // Rear wing aero
@@ -211,7 +230,7 @@ struct CarSetupData
     float     fuelLoad;                 // Fuel load
 };
 
-struct PacketCarSetupData
+ struct __attribute__((__packed__)) PacketCarSetupData
 {
     PacketHeader    header;            // Header
     CarSetupData    carSetups[20];
@@ -221,7 +240,7 @@ struct PacketCarSetupData
 // This packet details telemetry for all the cars in the race. It details various values that would be recorded on the car such as speed, throttle application, DRS etc.
 // Frequency: Rate as specified in menus
 // Size: 1085 bytes
-struct CarTelemetryData
+ struct __attribute__((__packed__)) CarTelemetryData
 {
     uint16_t    speed;                      // Speed of car in kilometres per hour
     uint8_t     throttle;                   // Amount of throttle applied (0 to 100)
@@ -239,7 +258,7 @@ struct CarTelemetryData
     float     tyresPressure[4];           // Tyres pressure (PSI)
 };
 
-struct PacketCarTelemetryData
+ struct __attribute__((__packed__)) PacketCarTelemetryData
 {
     PacketHeader        header;                // Header
     CarTelemetryData    carTelemetryData[20];
@@ -251,7 +270,7 @@ struct PacketCarTelemetryData
 // This packet details car statuses for all the cars in the race. It includes values such as the damage readings on the car.
 // Frequency: 2 per second
 // Size: 1061 bytes
-struct CarStatusData
+ struct __attribute__((__packed__)) CarStatusData
 {
     uint8_t       tractionControl;          // 0 (off) - 2 (high)
     uint8_t       antiLockBrakes;           // 0 (off) - 1 (on)
@@ -286,23 +305,24 @@ struct CarStatusData
     float       ersDeployedThisLap;       // ERS energy deployed this lap
 };
 
-struct PacketCarStatusData
+ struct __attribute__((__packed__)) PacketCarStatusData
 {
     PacketHeader        header;            // Header
     CarStatusData       carStatusData[20];
 };
 
-struct NetworkPacket {
-    NetworkPacket() {}
-    NetworkPacket(const NetworkPacket& c) {
-        header.packetFormat = c.header.packetFormat;    
-        header.packetVersion = c.header.packetVersion;
-        header.packetId = c.header.packetId;        
-        header.sessionUID = c.header.sessionUID; 
-        header.sessionTime = c.header.sessionTime;     
-        header.frameIdentifier = c.header.frameIdentifier;
-        header.playerCarIndex = c.header.playerCarIndex;
-    }
+struct __attribute__((__packed__)) NetworkPacket {
+    // NetworkPacket() {}
+    // NetworkPacket(const NetworkPacket& c) {
+    //     header.packetFormat = c.header.packetFormat;    
+    //     header.packetVersion = c.header.packetVersion;
+    //     header.packetId = c.header.packetId;        
+    //     header.sessionUID = c.header.sessionUID; 
+    //     header.sessionTime = c.header.sessionTime;     
+    //     header.frameIdentifier = c.header.frameIdentifier;
+    //     header.playerCarIndex = c.header.playerCarIndex;
+    //     std::copy(c.data.begin(), c.data.end(), data);// = c.data
+    // }
   PacketHeader header;
   char data[2027];
 };

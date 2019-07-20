@@ -51,7 +51,6 @@ void UDPListener::run() {
     int n; 
     printf("Listening for traffic on port: %d\n", port);
     bool go = true;
-    int i = 0;
     while(go) {
         NetworkPacket data;
         n = recvfrom(sockfd, (char *)&buffer, sizeof(buffer), 0, ( struct sockaddr *) &cliaddr, &len);
@@ -71,26 +70,16 @@ void UDPListener::run() {
         
         memcpy(&data.data, buffer, sizeof(buffer));
 
-        for(int i=21;i<n; i++)
-        {
-            printf("%02x ",buffer[i]);
-        // memset()
-        }
-        printf("\n---------------------------\n");
-        // data.data[n] = '\0'; 
-        // write(1,data.data,n);    
+        // for(int i=21;i<n; i++)
+        // {
+        //     printf("%02x ",buffer[i]);
+        // // memset()
+        // }
+        // printf("\n---------------------------\n");
+  
         q->push_item(data);
-        i++;
-        // for(int i = 0; i < n; ++i)
-            // fprintf(stdout, "%02X%s", buffer[i], ( i + 1 ) % 16 == 0 ? "\n" : " " );
-        // printf("Client : %s\n", buffer);
+
         memset(&buffer, 0, sizeof(buffer));
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
     }
-
-    // sendto(sockfd, (const char *)hello, strlen(hello),  
-    //     MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
-    //         len); 
-    // printf("Hello message sent.\n");  
 }

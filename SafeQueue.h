@@ -16,13 +16,13 @@ public:
   SafeQueue<T>() {
     size = 0;
   }
-  void push_item(T data);
+  void push_item(const T& data);
   T pop_item();
   unsigned int get_size();
 };
 
 template<class T>
-inline void SafeQueue<T>::push_item(T data)
+inline void SafeQueue<T>::push_item(const T& data)
 {
   std::unique_lock<std::mutex> lock(mu_queue);
   bool was_empty = item_queue.empty();
