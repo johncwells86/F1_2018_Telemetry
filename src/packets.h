@@ -5,18 +5,7 @@
 #include <iterator>
 #include <iostream>
 
- struct __attribute__((__packed__)) PacketHeader
-{
-    // PacketHeader() {}
-    // PacketHeader(const PacketHeader& header) {
-    //     packetFormat = header.packetFormat;
-    //     packetVersion = header.packetVersion;
-    //     packetId = header.packetId;
-    //     sessionUID = header.sessionUID;
-    //     sessionTime = header.sessionTime;
-    //     frameIdentifier = header.frameIdentifier;
-    //     playerCarIndex = header.playerCarIndex;
-    // }
+struct __attribute__((__packed__)) PacketHeader {
     uint16_t    packetFormat;         // 2018 2
     uint8_t     packetVersion;        // Version of this packet type, all start from 1 1
     uint8_t     packetId;             // Identifier for the packet type, see below 1
@@ -31,19 +20,7 @@
 // N.B. For the normalised vectors below, to convert to float values divide by 32767.0f. 16-bit signed values are used to pack the data and on the assumption that direction values are always between -1.0f and 1.0f.
 // Frequency: Rate as specified in menus
 // Size: 1341 bytes
-struct __attribute__((__packed__)) CarMotionData
-{
-    // CarMotionData() {}
-    // CarMotionData(char buffer[]) {
-    //     struct CarMotionData* p=this;
-    //     unsigned char* charPtr=(unsigned char*)p;
-        // memcpy(&worldPosX, &buffer, sizeof(worldPosX));
-        // memcpy(&worldPosY, &buffer + 3, sizeof(worldPosY));
-        // memcpy(&worldPosZ, &buffer + 7, sizeof(worldPosZ));
-        // memcpy(&worldVelX, &buffer + 11, sizeof(worldVelX));
-        // memcpy(&worldVelY, &buffer + 15, sizeof(worldVelY));
-        // memcpy(&worldVelZ, &buffer + 19, sizeof(worldVelZ));
-    // }
+struct __attribute__((__packed__)) CarMotionData {
     float         worldPosX = 0;           // World space X position
     float         worldPosY = 0;           // World space Y position
     float         worldPosZ = 0;           // World space Z position
@@ -63,8 +40,8 @@ struct __attribute__((__packed__)) CarMotionData
     float         pitch = 0;                    // Pitch angle in radians
     float         roll = 0;                     // Roll angle in radians
 };
- struct __attribute__((__packed__)) PacketMotionData
-{
+
+struct __attribute__((__packed__)) PacketMotionData {
     PacketHeader    header;               // Header
 
     CarMotionData   carMotionData[20];    // Data for all cars on track
@@ -92,14 +69,12 @@ struct __attribute__((__packed__)) CarMotionData
 // The session packet includes details about the current session in progress.
 // Frequency: 2 per second
 // Size: 147 bytes
- struct __attribute__((__packed__)) MarshalZone
-{
+struct __attribute__((__packed__)) MarshalZone {
     float  zoneStart;   // Fraction (0..1) of way through the lap the marshal zone starts
     int8_t   zoneFlag;    // -1 = invalid/unknown, 0 = none, 1 = green, 2 = blue, 3 = yellow, 4 = red
 };
 
- struct __attribute__((__packed__)) PacketSessionData
-{
+struct __attribute__((__packed__)) PacketSessionData {
     PacketHeader    header;                 // Header
 
     uint8_t           weather;                // Weather - 0 = clear, 1 = light cloud, 2 = overcast
@@ -131,9 +106,7 @@ struct __attribute__((__packed__)) CarMotionData
 // The lap data packet gives details of all the cars in the session.
 // Frequency: Rate as specified in menus
 // Size: 841 bytes
-
- struct __attribute__((__packed__)) LapData
-{
+struct __attribute__((__packed__)) LapData {
     
     float       lastLapTime;           // Last lap time in seconds
     float       currentLapTime;        // Current time around the lap in seconds
@@ -159,13 +132,7 @@ struct __attribute__((__packed__)) CarMotionData
                                          // 6 = retired
 };
 
- struct __attribute__((__packed__)) PacketLapData
-{
-    PacketLapData(const PacketHeader& hdr, char buffer[])
-    {
-        header = hdr;
-        
-    }
+struct __attribute__((__packed__)) PacketLapData {
     PacketHeader    header;              // Header
     LapData         lapData[20];         // Lap data for all cars on track
 };
@@ -174,8 +141,7 @@ struct __attribute__((__packed__)) CarMotionData
 // This packet gives details of events that happen during the course of the race.
 // Frequency: When the event occurs
 // Size: 25 bytes
- struct __attribute__((__packed__)) PacketEventData
-{
+struct __attribute__((__packed__)) PacketEventData {
     PacketHeader    header;               // Header
     uint8_t           eventStringCode[4];   // Event string code, see above
 };
@@ -184,8 +150,7 @@ struct __attribute__((__packed__)) CarMotionData
 // This is a list of participants in the race. If the vehicle is controlled by AI, then the name will be the driver name. If this is a multiplayer game, the names will be the Steam Id on PC, or the LAN name if appropriate. On Xbox One, the names will always be the driver name, on PS4 the name will be the LAN name if playing a LAN game, otherwise it will be the driver name.
 // Frequency: Every 5 seconds
 // Size: 1082 bytes
- struct __attribute__((__packed__)) ParticipantData
-{
+struct __attribute__((__packed__)) ParticipantData {
     uint8_t      aiControlled;           // Whether the vehicle is AI (1) or Human (0) controlled
     uint8_t      driverId;               // Driver id - see appendix
     uint8_t      teamId;                 // Team id - see appendix
@@ -194,8 +159,7 @@ struct __attribute__((__packed__)) CarMotionData
     char       name[48];               // Name of participant in UTF-8 format – null terminated
                                          // Will be truncated with … (U+2026) if too long
 };
- struct __attribute__((__packed__)) PacketParticipantsData
-{
+struct __attribute__((__packed__)) PacketParticipantsData {
     PacketHeader    header;            // Header
 
     uint8_t           numCars;           // Number of cars in the data
@@ -206,8 +170,7 @@ struct __attribute__((__packed__)) CarMotionData
 // This packet details the car setups for each vehicle in the session. Note that in multiplayer games, other player cars will appear as blank, you will only be able to see your car setup and AI cars.
 // Frequency: Every 5 seconds
 // Size: 841 bytes
- struct __attribute__((__packed__)) CarSetupData
-{
+struct __attribute__((__packed__)) CarSetupData {
     uint8_t     frontWing;                // Front wing aero
     uint8_t     rearWing;                 // Rear wing aero
     uint8_t     onThrottle;               // Differential adjustment on throttle (percentage)
@@ -230,8 +193,7 @@ struct __attribute__((__packed__)) CarMotionData
     float     fuelLoad;                 // Fuel load
 };
 
- struct __attribute__((__packed__)) PacketCarSetupData
-{
+struct __attribute__((__packed__)) PacketCarSetupData {
     PacketHeader    header;            // Header
     CarSetupData    carSetups[20];
 };
@@ -240,8 +202,7 @@ struct __attribute__((__packed__)) CarMotionData
 // This packet details telemetry for all the cars in the race. It details various values that would be recorded on the car such as speed, throttle application, DRS etc.
 // Frequency: Rate as specified in menus
 // Size: 1085 bytes
- struct __attribute__((__packed__)) CarTelemetryData
-{
+struct __attribute__((__packed__)) CarTelemetryData {
     uint16_t    speed;                      // Speed of car in kilometres per hour
     uint8_t     throttle;                   // Amount of throttle applied (0 to 100)
     int8_t      steer;                      // Steering (-100 (full lock left) to 100 (full lock right))
@@ -258,8 +219,7 @@ struct __attribute__((__packed__)) CarMotionData
     float     tyresPressure[4];           // Tyres pressure (PSI)
 };
 
- struct __attribute__((__packed__)) PacketCarTelemetryData
-{
+struct __attribute__((__packed__)) PacketCarTelemetryData {
     PacketHeader        header;                // Header
     CarTelemetryData    carTelemetryData[20];
     uint32_t              buttonStatus;         // Bit flags specifying which buttons are being
@@ -270,8 +230,7 @@ struct __attribute__((__packed__)) CarMotionData
 // This packet details car statuses for all the cars in the race. It includes values such as the damage readings on the car.
 // Frequency: 2 per second
 // Size: 1061 bytes
- struct __attribute__((__packed__)) CarStatusData
-{
+struct __attribute__((__packed__)) CarStatusData {
     uint8_t       tractionControl;          // 0 (off) - 2 (high)
     uint8_t       antiLockBrakes;           // 0 (off) - 1 (on)
     uint8_t       fuelMix;                  // Fuel mix - 0 = lean, 1 = standard, 2 = rich, 3 = max
@@ -305,24 +264,13 @@ struct __attribute__((__packed__)) CarMotionData
     float       ersDeployedThisLap;       // ERS energy deployed this lap
 };
 
- struct __attribute__((__packed__)) PacketCarStatusData
-{
+struct __attribute__((__packed__)) PacketCarStatusData {
     PacketHeader        header;            // Header
     CarStatusData       carStatusData[20];
 };
 
 struct __attribute__((__packed__)) NetworkPacket {
-    // NetworkPacket() {}
-    // NetworkPacket(const NetworkPacket& c) {
-    //     header.packetFormat = c.header.packetFormat;    
-    //     header.packetVersion = c.header.packetVersion;
-    //     header.packetId = c.header.packetId;        
-    //     header.sessionUID = c.header.sessionUID; 
-    //     header.sessionTime = c.header.sessionTime;     
-    //     header.frameIdentifier = c.header.frameIdentifier;
-    //     header.playerCarIndex = c.header.playerCarIndex;
-    //     std::copy(c.data.begin(), c.data.end(), data);// = c.data
-    // }
+
   PacketHeader header;
   char data[2027];
 };

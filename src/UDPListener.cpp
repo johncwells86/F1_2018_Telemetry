@@ -12,8 +12,6 @@
 
 UDPListener::UDPListener(int port, SafeQueue<NetworkPacket>* q)
   : port(port), q(q) {
-
-    // run();
 }
 
 UDPListener::~UDPListener() {
@@ -68,18 +66,11 @@ void UDPListener::run() {
         memcpy(&data.header.frameIdentifier, buffer + 16, sizeof(uint32_t));
         memcpy(&data.header.playerCarIndex, buffer + 20, sizeof(uint8_t));
         
-        memcpy(&data.data, buffer, sizeof(buffer));
+        memcpy(&data.data, buffer, sizeof(buffer) - 21);
 
-        // for(int i=21;i<n; i++)
-        // {
-        //     printf("%02x ",buffer[i]);
-        // // memset()
-        // }
-        // printf("\n---------------------------\n");
-  
         q->push_item(data);
 
         memset(&buffer, 0, sizeof(buffer));
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        // std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
