@@ -4,6 +4,8 @@
 #include <fstream>
 #include <chrono>
 #include <nlohmann/json.hpp>
+#include <mongocxx/v_noabi/mongocxx/client.hpp>
+
 #include "PacketAnalyzer.h"
 
 using namespace nlohmann;

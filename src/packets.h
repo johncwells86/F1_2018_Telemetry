@@ -75,7 +75,7 @@ struct __attribute__((__packed__)) MarshalZone {
 };
 
 struct __attribute__((__packed__)) PacketSessionData {
-    PacketHeader    header;                 // Header
+    PacketHeader      header;                 // Header
 
     uint8_t           weather;                // Weather - 0 = clear, 1 = light cloud, 2 = overcast
                                               // 3 = light rain, 4 = heavy rain, 5 = storm
@@ -96,10 +96,10 @@ struct __attribute__((__packed__)) PacketSessionData {
     uint8_t           spectatorCarIndex;      // Index of the car being spectated
     uint8_t           sliProNativeSupport;    // SLI Pro support, 0 = inactive, 1 = active
     uint8_t           numMarshalZones;        // Number of marshal zones to follow
-    MarshalZone     marshalZones[21];       // List of marshal zones – max 21
+    MarshalZone       marshalZones[21];       // List of marshal zones – max 21
     uint8_t           safetyCarStatus;        // 0 = no safety car, 1 = full safety car
                                                 // 2 = virtual safety car
-    uint8_t          networkGame;              // 0 = offline, 1 = online
+    uint8_t           networkGame;              // 0 = offline, 1 = online
 };
 
 // LAP DATA PACKET
