@@ -15,19 +15,21 @@ struct __attribute__((__packed__)) PacketHeader {
     uint8_t     playerCarIndex;       // Index of player's car in the array 1
 };
 
-// MOTION PACKET
-//  The motion packet gives physics data for all the cars being driven. There is additional data for the car being driven with the goal of being able to drive a motion platform setup.
-// N.B. For the normalised vectors below, to convert to float values divide by 32767.0f. 16-bit signed values are used to pack the data and on the assumption that direction values are always between -1.0f and 1.0f.
-// Frequency: Rate as specified in menus
-// Size: 1341 bytes
+//  MOTION PACKET
+//  The motion packet gives physics data for all the cars being driven. 
+//  There is additional data for the car being driven with the goal of being able to drive a motion platform setup.
+//  N.B. For the normalised vectors below, to convert to float values divide by 32767.0f. 
+//  16-bit signed values are used to pack the data and on the assumption that direction values are always between -1.0f and 1.0f.
+//  Frequency: Rate as specified in menus (20hz, 30hz, or 60hz)
+//  Size: 1341 bytes
 struct __attribute__((__packed__)) CarMotionData {
-    float         worldPosX = 0;           // World space X position
-    float         worldPosY = 0;           // World space Y position
-    float         worldPosZ = 0;           // World space Z position
-    float         worldVelX  = 0;           // Velocity in world space X
-    float         worldVelY  = 0;           // Velocity in world space Y
-    float         worldVelZ  = 0;           // Velocity in world space Z
-    int16_t       worldForwardDirX  = 0;         // World space forward X direction (normalised)
+    float         worldPosX = 0;                // World space X position
+    float         worldPosY = 0;                // World space Y position
+    float         worldPosZ = 0;                // World space Z position
+    float         worldVelX  = 0;               // Velocity in world space X
+    float         worldVelY  = 0;               // Velocity in world space Y
+    float         worldVelZ  = 0;               // Velocity in world space Z
+    int16_t       worldForwardDirX  = 0;        // World space forward X direction (normalised)
     int16_t       worldForwardDirY = 0;         // World space forward Y direction (normalised)
     int16_t       worldForwardDirZ = 0;         // World space forward Z direction (normalised)
     int16_t       worldRightDirX = 0;           // World space right X direction (normalised)
@@ -67,7 +69,7 @@ struct __attribute__((__packed__)) PacketMotionData {
 
 // SESSION PACKET
 // The session packet includes details about the current session in progress.
-// Frequency: 2 per second
+// Frequency: 2 per second (120hz)
 // Size: 147 bytes
 struct __attribute__((__packed__)) MarshalZone {
     float  zoneStart;   // Fraction (0..1) of way through the lap the marshal zone starts
@@ -114,22 +116,22 @@ struct __attribute__((__packed__)) LapData {
     float       sector1Time;           // Sector 1 time in seconds
     float       sector2Time;           // Sector 2 time in seconds
     float       lapDistance;           // Distance vehicle is around current lap in metres – could
-                                         // be negative if line hasn’t been crossed yet
+                                       // be negative if line hasn’t been crossed yet
     float       totalDistance;         // Total distance travelled in session in metres – could
-                                         // be negative if line hasn’t been crossed yet
+                                       // be negative if line hasn’t been crossed yet
     float       safetyCarDelta;        // Delta in seconds for safety car
-    uint8_t       carPosition;           // Car race position
-    uint8_t       currentLapNum;         // Current lap number
-    uint8_t       pitStatus;             // 0 = none, 1 = pitting, 2 = in pit area
-    uint8_t       sector;                // 0 = sector1, 1 = sector2, 2 = sector3
-    uint8_t       currentLapInvalid;     // Current lap invalid - 0 = valid, 1 = invalid
-    uint8_t       penalties;             // Accumulated time penalties in seconds to be added
-    uint8_t       gridPosition;          // Grid position the vehicle started the race in
-    uint8_t       driverStatus;          // Status of driver - 0 = in garage, 1 = flying lap
-                                         // 2 = in lap, 3 = out lap, 4 = on track
-    uint8_t       resultStatus;          // Result status - 0 = invalid, 1 = inactive, 2 = active
-                                         // 3 = finished, 4 = disqualified, 5 = not classified
-                                         // 6 = retired
+    uint8_t     carPosition;           // Car race position
+    uint8_t     currentLapNum;         // Current lap number
+    uint8_t     pitStatus;             // 0 = none, 1 = pitting, 2 = in pit area
+    uint8_      sector;                // 0 = sector1, 1 = sector2, 2 = sector3
+    uint8_t     currentLapInvalid;     // Current lap invalid - 0 = valid, 1 = invalid
+    uint8_t     penalties;             // Accumulated time penalties in seconds to be added
+    uint8_t     gridPosition;          // Grid position the vehicle started the race in
+    uint8_t     driverStatus;          // Status of driver - 0 = in garage, 1 = flying lap
+                                       // 2 = in lap, 3 = out lap, 4 = on track
+    uint8_t     resultStatus;          // Result status - 0 = invalid, 1 = inactive, 2 = active
+                                       // 3 = finished, 4 = disqualified, 5 = not classified
+                                       // 6 = retired
 };
 
 struct __attribute__((__packed__)) PacketLapData {
@@ -143,11 +145,15 @@ struct __attribute__((__packed__)) PacketLapData {
 // Size: 25 bytes
 struct __attribute__((__packed__)) PacketEventData {
     PacketHeader    header;               // Header
-    uint8_t           eventStringCode[4];   // Event string code, see above
+    uint8_t         eventStringCode[4];   // Event string code, see above
 };
 
 // PARTICIPANTS PACKET
-// This is a list of participants in the race. If the vehicle is controlled by AI, then the name will be the driver name. If this is a multiplayer game, the names will be the Steam Id on PC, or the LAN name if appropriate. On Xbox One, the names will always be the driver name, on PS4 the name will be the LAN name if playing a LAN game, otherwise it will be the driver name.
+// This is a list of participants in the race. 
+// If the vehicle is controlled by AI, then the name will be the driver name. 
+// If this is a multiplayer game, the names will be the Steam Id on PC, or the LAN name if appropriate.
+// On Xbox One, the names will always be the driver name.
+// On PS4 the name will be the LAN name if playing a LAN game, otherwise it will be the driver name.
 // Frequency: Every 5 seconds
 // Size: 1082 bytes
 struct __attribute__((__packed__)) ParticipantData {
@@ -156,7 +162,7 @@ struct __attribute__((__packed__)) ParticipantData {
     uint8_t      teamId;                 // Team id - see appendix
     uint8_t      raceNumber;             // Race number of the car
     uint8_t      nationality;            // Nationality of the driver
-    char       name[48];               // Name of participant in UTF-8 format – null terminated
+    char         name[48];               // Name of participant in UTF-8 format – null terminated
                                          // Will be truncated with … (U+2026) if too long
 };
 struct __attribute__((__packed__)) PacketParticipantsData {
@@ -167,7 +173,9 @@ struct __attribute__((__packed__)) PacketParticipantsData {
 };
 
 // CAR SETUPS PACKET
-// This packet details the car setups for each vehicle in the session. Note that in multiplayer games, other player cars will appear as blank, you will only be able to see your car setup and AI cars.
+// This packet details the car setups for each vehicle in the session. 
+// Note that in multiplayer games, other player cars will appear as blank,
+// you will only be able to see your car setup and AI cars.
 // Frequency: Every 5 seconds
 // Size: 841 bytes
 struct __attribute__((__packed__)) CarSetupData {
@@ -175,10 +183,10 @@ struct __attribute__((__packed__)) CarSetupData {
     uint8_t     rearWing;                 // Rear wing aero
     uint8_t     onThrottle;               // Differential adjustment on throttle (percentage)
     uint8_t     offThrottle;              // Differential adjustment off throttle (percentage)
-    float     frontCamber;              // Front camber angle (suspension geometry)
-    float     rearCamber;               // Rear camber angle (suspension geometry)
-    float     frontToe;                 // Front toe angle (suspension geometry)
-    float     rearToe;                  // Rear toe angle (suspension geometry)
+    float       frontCamber;              // Front camber angle (suspension geometry)
+    float       rearCamber;               // Rear camber angle (suspension geometry)
+    float       frontToe;                 // Front toe angle (suspension geometry)
+    float       rearToe;                  // Rear toe angle (suspension geometry)
     uint8_t     frontSuspension;          // Front suspension
     uint8_t     rearSuspension;           // Rear suspension
     uint8_t     frontAntiRollBar;         // Front anti-roll bar
@@ -187,10 +195,10 @@ struct __attribute__((__packed__)) CarSetupData {
     uint8_t     rearSuspensionHeight;     // Rear ride height
     uint8_t     brakePressure;            // Brake pressure (percentage)
     uint8_t     brakeBias;                // Brake bias (percentage)
-    float     frontTyrePressure;        // Front tyre pressure (PSI)
-    float     rearTyrePressure;         // Rear tyre pressure (PSI)
+    float       frontTyrePressure;        // Front tyre pressure (PSI)
+    float       rearTyrePressure;         // Rear tyre pressure (PSI)
     uint8_t     ballast;                  // Ballast
-    float     fuelLoad;                 // Fuel load
+    float       fuelLoad;                 // Fuel load
 };
 
 struct __attribute__((__packed__)) PacketCarSetupData {
@@ -216,18 +224,19 @@ struct __attribute__((__packed__)) CarTelemetryData {
     uint16_t    tyresSurfaceTemperature[4]; // Tyres surface temperature (celsius)
     uint16_t    tyresInnerTemperature[4];   // Tyres inner temperature (celsius)
     uint16_t    engineTemperature;          // Engine temperature (celsius)
-    float     tyresPressure[4];           // Tyres pressure (PSI)
+    float       tyresPressure[4];           // Tyres pressure (PSI)
 };
 
 struct __attribute__((__packed__)) PacketCarTelemetryData {
     PacketHeader        header;                // Header
     CarTelemetryData    carTelemetryData[20];
-    uint32_t              buttonStatus;         // Bit flags specifying which buttons are being
+    uint32_t            buttonStatus;           // Bit flags specifying which buttons are being
                                                 // pressed currently - see appendices
 };
 
 // CAR STATUS PACKET
-// This packet details car statuses for all the cars in the race. It includes values such as the damage readings on the car.
+// This packet details car statuses for all the cars in the race.
+// It includes values such as the damage readings on the car.
 // Frequency: 2 per second
 // Size: 1061 bytes
 struct __attribute__((__packed__)) CarStatusData {
@@ -236,8 +245,8 @@ struct __attribute__((__packed__)) CarStatusData {
     uint8_t       fuelMix;                  // Fuel mix - 0 = lean, 1 = standard, 2 = rich, 3 = max
     uint8_t       frontBrakeBias;           // Front brake bias (percentage)
     uint8_t       pitLimiterStatus;         // Pit limiter status - 0 = off, 1 = on
-    float       fuelInTank;               // Current fuel mass
-    float       fuelCapacity;             // Fuel capacity
+    float         fuelInTank;               // Current fuel mass
+    float         fuelCapacity;             // Fuel capacity
     uint16_t      maxRPM;                   // Cars max RPM, point of rev limiter
     uint16_t      idleRPM;                  // Cars idle RPM
     uint8_t       maxGears;                 // Maximum number of gears
@@ -256,12 +265,12 @@ struct __attribute__((__packed__)) CarStatusData {
     uint8_t       exhaustDamage;            // Exhaust damage (percentage)
     int8_t        vehicleFiaFlags;          // -1 = invalid/unknown, 0 = none, 1 = green
                                             // 2 = blue, 3 = yellow, 4 = red
-    float       ersStoreEnergy;           // ERS energy store in Joules
+    float         ersStoreEnergy;           // ERS energy store in Joules
     uint8_t       ersDeployMode;            // ERS deployment mode, 0 = none, 1 = low, 2 = medium
                                             // 3 = high, 4 = overtake, 5 = hotlap
-    float       ersHarvestedThisLapMGUK;  // ERS energy harvested this lap by MGU-K
-    float       ersHarvestedThisLapMGUH;  // ERS energy harvested this lap by MGU-H
-    float       ersDeployedThisLap;       // ERS energy deployed this lap
+    float         ersHarvestedThisLapMGUK;  // ERS energy harvested this lap by MGU-K
+    float         ersHarvestedThisLapMGUH;  // ERS energy harvested this lap by MGU-H
+    float         ersDeployedThisLap;       // ERS energy deployed this lap
 };
 
 struct __attribute__((__packed__)) PacketCarStatusData {
