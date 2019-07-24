@@ -1,4 +1,4 @@
-#include "UDPListener.h"
+#include "../include/UDPListener.h"
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <iostream>
@@ -8,7 +8,7 @@
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 #include <netinet/in.h>
-#include "packets.h"
+#include "../include/packets.h"
 
 UDPListener::UDPListener(int port, SafeQueue<NetworkPacket>* q)
   : port(port), q(q) {

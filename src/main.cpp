@@ -1,8 +1,8 @@
 #include <thread>
-#include "UDPListener.h"
-#include "SafeQueue.h"
-#include "PacketAnalyzer.h"
-#include "packets.h"
+#include "../include/UDPListener.h"
+#include "../include/SafeQueue.h"
+#include "../include/PacketAnalyzer.h"
+#include "../include/packets.h"
 int main(int argc, char *argv[])
 {
     SafeQueue<NetworkPacket>* q = new SafeQueue<NetworkPacket>();
