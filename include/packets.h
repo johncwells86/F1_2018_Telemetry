@@ -123,7 +123,7 @@ struct __attribute__((__packed__)) LapData {
     uint8_t     carPosition;           // Car race position
     uint8_t     currentLapNum;         // Current lap number
     uint8_t     pitStatus;             // 0 = none, 1 = pitting, 2 = in pit area
-    uint8_      sector;                // 0 = sector1, 1 = sector2, 2 = sector3
+    uint8_t     sector;                // 0 = sector1, 1 = sector2, 2 = sector3
     uint8_t     currentLapInvalid;     // Current lap invalid - 0 = valid, 1 = invalid
     uint8_t     penalties;             // Accumulated time penalties in seconds to be added
     uint8_t     gridPosition;          // Grid position the vehicle started the race in
