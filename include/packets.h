@@ -1,4 +1,5 @@
 #pragma once
+#pragma pack(push,1)
 #include <sys/types.h>
 #include <cstring>
 #include <algorithm>
@@ -284,3 +285,4 @@ struct __attribute__((__packed__)) NetworkPacket {
   char data[2027];
 };
 
+#pragma pack(pop)
